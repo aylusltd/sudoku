@@ -1,0 +1,3 @@
+[submodule "polymer/webcomponents"]
+	path = polymer/webcomponents
+	url = https://github.com/webcomponents/webcomponentsjs
