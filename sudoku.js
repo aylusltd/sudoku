@@ -10,9 +10,88 @@ var m = [
     [9,1,2,3,4,5,6,7,8]
 ];
 
-function makeMatrix(){
+function makeMatrix(seed){
+    seed = typeof seed === 'number' ? 
+        Math.floor(seed) : 
+        Math.floor(Math.random()*Math.pow(2,24));
+
+    seed = seed.toString(2).split("").map(function(n){return !!+n});
+    while(seed.length < 24){
+        seed.unshift(0);
+    }
+    seed=seed.reverse();
     var matrix=[];
+    function invertRows(m){
+        var a = [];
+        for(var i=0; i<9; i++) {
+            a[8-i] = m[i];
+        }
+        return a;
+    }
+    function invertColumns(m){
+        var a =[];
+        for(var i=0; i<9; i++){
+            a[i]=[];
+            for(var j=0; j<9; j++){
+                a[i][8-j]=m[i][j];
+            }
+        }
+        return a;
+    }
+
+    function shuffleBlockRows(m){
+        var a = [];
+        for(var i=3; i<12; i++){
+            a[i-3]=m[i%9];
+        }
+        return a;
+    }
+    function shuffleBlockCols(m){
+        var a =[];
+        for(var j=0; j<9; j++){
+            a[j]=[];
+            for(var i=3; i<12; i++){
+                a[j][i-3]=m[j][i%9];
+            }
+        }
+        return a;
+    }
+    function rotate(m){
+        var a =[]
+        for(var i=0; i<9; i++){
+            a[i]=[];
+            for(var j=0; j<9; j++){
+                a[i][j]=m[8-j][i]
+            }
+        }
+        return a;
+    }
+
+    function diagonal(m){
+        var a =[];
+        for(var i=0; i<9; i++){
+            a[i]=[];
+            for(var j=0; j<9; j++){
+                a[i][j]=m[j][i];
+            }
+        }
+        return a;
+    }
+    var transformArray = [
+        invertRows,
+        invertColumns,
+        shuffleBlockRows,
+        shuffleBlockCols,
+        rotate,
+        diagonal
+    ];
+
     matrix=m;
+    seed.forEach(function(v,i){
+        if(v){
+            matrix=transformArray[i%transformArray.length](matrix);
+        }
+    });
     return matrix;
 }
 
